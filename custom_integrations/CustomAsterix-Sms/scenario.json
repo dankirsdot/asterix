@@ -1,0 +1,22 @@
+{
+    "crop": [
+        0,
+        0,
+        0,
+        0
+    ],
+    "actions": [
+        [[], ["UP"], ["DOWN"]],
+        [[], ["LEFT"], ["RIGHT"]],
+        [[], ["A"], ["B"]]
+    ],
+    "reward": {
+        "script": "lua:asterix_reward"
+    },
+    "done": {
+        "script": "lua:asterix_done"
+    },
+    "scripts": [
+        "script.lua"
+    ]
+}

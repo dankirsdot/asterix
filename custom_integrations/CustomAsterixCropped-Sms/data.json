@@ -1,0 +1,40 @@
+{
+    "info": {
+        "gameover": {
+            "address": 49731,
+            "type": "|d1"
+        },
+        "level": {
+            "address": 52334,
+            "type": "|u1"
+        },
+        "health": {
+            "address": 49306,
+            "type": "|u1"
+        },
+        "lives": {
+            "address": 49309,
+            "type": "|u1"
+        },
+        "bones": {
+            "address": 49311,
+            "type": "<d2"
+        },
+        "item": {
+            "address": 49291,
+            "type": "|u1"
+        },
+        "key": {
+            "address": 49292,
+            "type": "|u1"
+        },
+        "score": {
+            "address": 49346,
+            "type": "<d2"
+        },
+        "time": {
+            "address": 49314,
+            "type": "<d4"
+        }
+    }
+}

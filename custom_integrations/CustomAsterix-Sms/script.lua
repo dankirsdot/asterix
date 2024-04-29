@@ -5,22 +5,34 @@ prev_item = 0
 prev_key = 0
 prev_score = 0
 prev_time = 0
+prev_pos_x = 128
 
 boss_killed = 0
 
+function math.sign(x)
+    if x<0 then
+        return -1
+    elseif x>0 then
+        return 1
+    else
+        return 0
+    end
+end
+
 function asterix_reward ()
     local health_reward = (data.health - prev_health) * 1
-    local lives_reward = (data.lives - prev_lives) * 10
+    local lives_reward = (data.lives - prev_lives) * 5
     local bones_reward = (data.bones - prev_bones) * 1
     local item_reward = (data.item - prev_item) * 5
     local key_reward = (data.key - prev_key) * 5
     local score_reward = (data.score - prev_score) * 1
-    local time_reward = -1/50 
+    local position_reward = math.sign(data.pos_x - prev_pos_x) * 1
+    local time_reward = 0 -- -1/50 
 
     local level_reward = 0
     if score_reward == 30 then
         boss_killed = 1
-        -- level_reward = data.time / 10
+        level_reward = data.time / 10
     end
 
     prev_health = data.health
@@ -29,9 +41,10 @@ function asterix_reward ()
     prev_item = data.item
     prev_key = data.key
     prev_score = data.score
+    prev_pos_x = data.pos_x
     prev_time = data.time
 
-    local true_reward = score_reward + time_reward + level_reward
+    local true_reward = score_reward + time_reward + position_reward + level_reward
     local shaping_reward = health_reward + lives_reward + bones_reward + item_reward + key_reward
     return true_reward + shaping_reward 
 end
@@ -40,7 +53,7 @@ end
 function asterix_done()
     -- this condition is incorrect because the game ends one life early
     -- but it is the most reliable one we were able to identify
-    if data.lives == 0 then
+    if data.lives == 1 then
         return true
     end
 

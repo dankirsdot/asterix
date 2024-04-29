@@ -35,6 +35,10 @@
     "time": {
       "address": 49314,
       "type": "<d4"
+    },
+    "pos_x": {
+      "address": 49685,
+      "type": "<u2"
     }
   }
 }

@@ -128,7 +128,7 @@ class AsterixDiscretizer(Discretizer):
                 # [None], # no action, wait
                 ["A"], # jump
                 ["B"], # hit
-                # ["UP"], # useless by itself
+                ["UP"], # enter a door
                 ["DOWN"], # duck or enter an underground
                 ["LEFT"],
                 ["RIGHT"],
@@ -174,7 +174,7 @@ def make_retro(game, state=None, monitor_filename=None, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--game", default="CustomAsterix-Sms")
+    parser.add_argument("--game", default="CustomAsterixCropped-Sms")
     parser.add_argument("--state", default=retro.State.DEFAULT)
     parser.add_argument("--scenario", default=None)
     parser.add_argument("--render_mode", default="rgb_array")
@@ -209,9 +209,14 @@ def main():
     model = DQN(
         policy="CnnPolicy",
         env=venv,
-        verbose=1,
-        exploration_fraction=0.9,
-        tensorboard_log="./tensorboard_logs/"
+        learning_rate=1e-5,
+        # exploration_fraction=0.1,
+        # exploration_initial_eps=1.0,
+        # exploration_final_eps=0.5,
+        # target_update_interval=10_000,
+        # buffer_size=1_000_000,
+        tensorboard_log="./tensorboard_logs/",
+        verbose=1
     )
 
     if args.checkpoint:
@@ -232,13 +237,13 @@ def main():
         deterministic=True
     )
 
-    args.render_mode = 'human'
+    # args.render_mode = 'human'
     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env]), n_stack=4))
     eval_callback = EvalCallback(
         eval_env,
         best_model_save_path=args.log_dir,
         log_path=args.log_dir,
-        n_eval_episodes=1,
+        n_eval_episodes=5,
         eval_freq=2500,
         deterministic=True,
         render=False,
@@ -252,7 +257,7 @@ def main():
     ])
 
     model.learn(
-        total_timesteps=1_000_000,
+        total_timesteps=100_000_000,
         log_interval=1,
         tb_log_name=args.experiment_name,
         reset_num_timesteps=False,

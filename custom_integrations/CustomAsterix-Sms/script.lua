@@ -8,11 +8,12 @@ prev_time = 0
 prev_pos_x = 128
 
 boss_killed = 0
+done = 0
 
 function math.sign(x)
-    if x<0 then
+    if x < 0 then
         return -1
-    elseif x>0 then
+    elseif x > 0 then
         return 1
     else
         return 0
@@ -20,14 +21,27 @@ function math.sign(x)
 end
 
 function asterix_reward ()
-    local health_reward = (data.health - prev_health) * 1
-    local lives_reward = (data.lives - prev_lives) * 5
-    local bones_reward = (data.bones - prev_bones) * 1
-    local item_reward = (data.item - prev_item) * 5
-    local key_reward = (data.key - prev_key) * 5
+    local health_reward = (data.health - prev_health) * 0.2
+    local lives_reward = (data.lives - prev_lives) * 0.5
+    local bones_reward = (data.bones - prev_bones) * 0.1
+    local item_reward = (data.item - prev_item) * 0.5
+    local key_reward = (data.key - prev_key) * 0.5
     local score_reward = (data.score - prev_score) * 1
-    local position_reward = math.sign(data.pos_x - prev_pos_x) * 1
+    local position_reward = math.sign(data.pos_x - prev_pos_x) * 0.05
+    -- local position_reward = 0
+    -- if data.pos_x == prev_pos_x then
+    --     position_reward = -0.1
+    -- end
     local time_reward = 0 -- -1/50 
+
+    local door_reward = 0
+    if prev_pos_x - data.pos_x > 1000 then
+        door_reward = 5
+    end
+
+    if boss_killed == 1 then
+        done = 1
+    end
 
     local level_reward = 0
     if score_reward == 30 then
@@ -44,7 +58,7 @@ function asterix_reward ()
     prev_pos_x = data.pos_x
     prev_time = data.time
 
-    local true_reward = score_reward + time_reward + position_reward + level_reward
+    local true_reward = score_reward + time_reward + position_reward + level_reward + door_reward
     local shaping_reward = health_reward + lives_reward + bones_reward + item_reward + key_reward
     return true_reward + shaping_reward 
 end
@@ -53,12 +67,12 @@ end
 function asterix_done()
     -- this condition is incorrect because the game ends one life early
     -- but it is the most reliable one we were able to identify
-    if data.lives == 1 then
+    if data.lives < 3 then
         return true
     end
 
     -- you can complete the level only if you win a boss fight
-    if boss_killed == 1 then
+    if done == 1 then
         return true
     end
 

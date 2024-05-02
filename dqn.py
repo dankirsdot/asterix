@@ -174,7 +174,7 @@ def make_retro(game, state=None, monitor_filename=None, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--game", default="CustomAsterixCropped-Sms")
+    parser.add_argument("--game", default="CustomAsterix-Sms")
     parser.add_argument("--state", default=retro.State.DEFAULT)
     parser.add_argument("--scenario", default=None)
     parser.add_argument("--render_mode", default="rgb_array")

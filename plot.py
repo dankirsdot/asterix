@@ -1,3 +1,6 @@
+# This file is a modification of the results plotter provided by Stable Baselines3
+# https://github.com/DLR-RM/stable-baselines3/blob/master/stable_baselines3/common/results_plotter.py
+
 from typing import Callable, List, Optional, Tuple
 
 import ast

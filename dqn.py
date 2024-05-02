@@ -209,7 +209,6 @@ def main():
     model = DQN(
         policy="CnnPolicy",
         env=venv,
-        buffer_size=100_000,
         tensorboard_log="./tensorboard_logs/",
         verbose=1
     )

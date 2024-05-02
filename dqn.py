@@ -128,7 +128,7 @@ class AsterixDiscretizer(Discretizer):
                 # [None], # no action, wait
                 ["A"], # jump
                 ["B"], # hit
-                # ["UP"], # useless by itself
+                ["UP"], # enter a door
                 ["DOWN"], # duck or enter an underground
                 ["LEFT"],
                 ["RIGHT"],
@@ -174,11 +174,11 @@ def make_retro(game, state=None, monitor_filename=None, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--game", default="CustomAsterix-Sms")
+    parser.add_argument("--game", default="CustomAsterixCropped-Sms")
     parser.add_argument("--state", default=retro.State.DEFAULT)
     parser.add_argument("--scenario", default=None)
     parser.add_argument("--render_mode", default="rgb_array")
-    parser.add_argument("--n_envs", default=8, type=int)
+    parser.add_argument("--n_envs", default=20, type=int)
     parser.add_argument("--checkpoint", default=None)
     parser.add_argument("--log_dir", default='./logs/')
     parser.add_argument("--experiment_name", default='DQN')
@@ -209,9 +209,9 @@ def main():
     model = DQN(
         policy="CnnPolicy",
         env=venv,
-        verbose=1,
-        exploration_fraction=0.9,
-        tensorboard_log="./tensorboard_logs/"
+        buffer_size=100_000,
+        tensorboard_log="./tensorboard_logs/",
+        verbose=1
     )
 
     if args.checkpoint:
@@ -220,26 +220,26 @@ def main():
     checkpoint_callback = CheckpointCallback(
         name_prefix=args.experiment_name,
         save_path=args.log_dir,
-        save_freq=10000
+        save_freq=62500
     )
 
     record_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env]), n_stack=4))
     video_callback = VideoRecorderCallback(
         record_env,
         save_path=args.log_dir,
-        render_freq=10000,
+        render_freq= 62500,
         n_eval_episodes=1,
         deterministic=True
     )
 
-    args.render_mode = 'human'
+    # args.render_mode = 'human'
     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env]), n_stack=4))
     eval_callback = EvalCallback(
         eval_env,
         best_model_save_path=args.log_dir,
         log_path=args.log_dir,
-        n_eval_episodes=1,
-        eval_freq=2500,
+        n_eval_episodes=5,
+        eval_freq= 6250,
         deterministic=True,
         render=False,
         verbose=1
@@ -252,7 +252,7 @@ def main():
     ])
 
     model.learn(
-        total_timesteps=1_000_000,
+        total_timesteps=100_000_000,
         log_interval=1,
         tb_log_name=args.experiment_name,
         reset_num_timesteps=False,

@@ -8,6 +8,7 @@ prev_time = 0
 prev_pos_x = 128
 
 boss_killed = 0
+done = 0
 
 function math.sign(x)
     if x < 0 then
@@ -33,6 +34,15 @@ function asterix_reward ()
     -- end
     local time_reward = 0 -- -1/50 
 
+    local door_reward = 0
+    if prev_pos_x - data.pos_x > 1000 then
+        door_reward = 5
+    end
+
+    if boss_killed == 1 then
+        done = 1
+    end
+
     local level_reward = 0
     if score_reward == 30 then
         boss_killed = 1
@@ -48,7 +58,7 @@ function asterix_reward ()
     prev_pos_x = data.pos_x
     prev_time = data.time
 
-    local true_reward = score_reward + time_reward + position_reward + level_reward
+    local true_reward = score_reward + time_reward + position_reward + level_reward + door_reward
     local shaping_reward = health_reward + lives_reward + bones_reward + item_reward + key_reward
     return true_reward + shaping_reward 
 end
@@ -62,7 +72,7 @@ function asterix_done()
     end
 
     -- you can complete the level only if you win a boss fight
-    if boss_killed == 1 then
+    if done == 1 then
         return true
     end
 

@@ -231,6 +231,7 @@ def main():
         deterministic=True
     )
 
+    # uncomment the following line to turn on GUI while evaluating
     # args.render_mode = 'human'
     eval_env = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env]), n_stack=4))
     eval_callback = EvalCallback(
